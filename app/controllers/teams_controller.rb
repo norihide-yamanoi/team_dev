@@ -1,6 +1,6 @@
 class TeamsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_team, only: %i[show edit update destroy]
+  before_action :set_team, only: %i[show edit update destroy assignment]
 
   def index
     @teams = Team.all
@@ -45,6 +45,13 @@ class TeamsController < ApplicationController
 
   def dashboard
     @team = current_user.keep_team_id ? Team.find(current_user.keep_team_id) : current_user.teams.first
+  end
+
+  def assignment
+    @team.update(owner_id: params[:owner_id])
+    @user = User.find(@team.owner_id)
+    AssignmentMailer.assignment_mail(@user).deliver
+    redirect_to team_path, notice: '権限が移動'
   end
 
   private
