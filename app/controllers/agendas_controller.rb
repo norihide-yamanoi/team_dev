@@ -26,12 +26,12 @@ class AgendasController < ApplicationController
     if current_user.id == @agenda.user.id || current_user.id == @agenda.team.owner.id
       @agenda.destroy
       redirect_to dashboard_url, notice: "#{@agenda.title}を削除しました。"
-      #メール機能
+      # メール機能
       @keep_team_id = @agenda.team_id
       @user_emails = User.where(keep_team_id: @keep_team_id).pluck(:email)
       @user_emails.each do |emails|
         AgendaMailer.agenda_mail(emails).deliver
-      end  
+      end
     else
       redirect_to dashboard_url, notice: "削除できません。"
 
