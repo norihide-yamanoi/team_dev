@@ -15,7 +15,9 @@ class TeamsController < ApplicationController
     @team = Team.new
   end
 
-  def edit; end
+  def edit
+    redirect_to team_path, notice: 'この機能は使用できません' unless @team.owner == current_user
+  end
 
   def create
     @team = Team.new(team_params)
@@ -30,6 +32,7 @@ class TeamsController < ApplicationController
   end
 
   def update
+    redirect_to team_path, notice: 'この機能は使用できません' unless @team.owner == current_user
     if @team.update(team_params)
       redirect_to @team, notice: I18n.t('views.messages.update_team')
     else
